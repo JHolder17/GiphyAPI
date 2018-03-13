@@ -32,20 +32,45 @@ $("#add").on("click", function (event) {
     // Adding movie from the textbox to our array
     topics.push(movie);
 
-    // Calling renderButtons which handles the processing of our movie array
+    // Calling buttons which handles the processing of our movie array
     buttons();
 });
 
 //display the gif's fot movies
 function dispayGif() {
 
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + movie + "&api_key=dc6zaTOxFJmzC&limit=10";
+    var movie = $(this).attr("data-name");
+    var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=mKgRh4hFUILQPj1TUs4qNxT0nGHltUvP&q=" + movie + "&limit=10&offset=0&rating=G&lang=en"
 
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function (response) {
         console.log(response);
-    })}
+
+        //loop through the ten gifs that get displayed 
+
+        // Retrieving the URL for the image ??HOw to get all ten images from array
+        var gif = response[i].data.bitly_gif_url;
+
+        // Creating an element to hold the image
+        var image = $("<img>").attr("src", gif);
+
+        // Appending the image
+        $("#Gifs").append(image);
+
+        //rating info
+        var rating = response[i].rating;
+
+        // making a p for the rating
+        var pOne = $("<p>").text("Rating: " + rating);
+
+        //display rating
+        $("#Gifs").append(pOne);
+    });
+}
+//click event for the buttons
+$(document).on("click", ".movie-btn", dispayGif);
+
 
 buttons();
