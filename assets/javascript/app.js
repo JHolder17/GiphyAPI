@@ -1,5 +1,5 @@
 //starting options for my movie giphy api
-var topics = ["Gone in 60 Seconds", "Rush Hour", "Scarface", "White Men Can't Jump", "Fruitville Station"]
+var topics = ["Gone in 60 Seconds", "Rush Hour", "Scarface", "White Men Can't Jump", "Toy Story"]
 
 // movie buttons function
 function buttons() {
@@ -9,6 +9,7 @@ function buttons() {
 
     // Looping through the array of movies
     for (var i = 0; i < topics.length; i++) {
+
         //creating button
         var a = $("<button>");
         // Adding a class of movie-btn to our button
@@ -36,8 +37,11 @@ $("#add").on("click", function (event) {
     buttons();
 });
 
-//display the gif's fot movies
-function dispayGif() {
+//display the gif's for movies
+function dispayGifs() {
+    
+    //empty old gif details
+    $("#gifs").empty();
 
     var movie = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=mKgRh4hFUILQPj1TUs4qNxT0nGHltUvP&q=" + movie + "&limit=10&offset=0&rating=G&lang=en"
@@ -46,31 +50,39 @@ function dispayGif() {
         url: queryURL,
         method: "GET"
     }).then(function (response) {
-        console.log(response);
+        console.log(response.data);
 
         //loop through the ten gifs that get displayed 
+        for (var i = 0; i < response.data.length; i++) {
 
-        // Retrieving the URL for the image ??HOw to get all ten images from array
-        var gif = response[i].data.bitly_gif_url;
+            //place to hold gif & rating
+            var gifDetails = $("<div class='gifDetails'>");
 
-        // Creating an element to hold the image
-        var image = $("<img>").attr("src", gif);
+            //rating info
+            var rating = response.data[i].rating;
 
-        // Appending the image
-        $("#Gifs").append(image);
+            // making a p for the rating
+            var p = $("<p>").text("Rating: " + rating);
 
-        //rating info
-        var rating = response[i].rating;
+            //display rating
+            gifDetails.append(p);
 
-        // making a p for the rating
-        var pOne = $("<p>").text("Rating: " + rating);
+            // Store gif data,location in array
+            var gif = response.data[i].images.fixed_height.url;
 
-        //display rating
-        $("#Gifs").append(pOne);
+            // Creating an element to hold the gif
+            var image = $("<img>").attr("src", gif);
+
+            // Display in html 
+            gifDetails.prepend(image);
+
+            // Putting the entire movie above the previous movies
+            $("#gifs").prepend(gifDetails);
+        }
     });
 }
 //click event for the buttons
-$(document).on("click", ".movie-btn", dispayGif);
+$(document).on("click", ".movie-btn", dispayGifs);
 
 
 buttons();
