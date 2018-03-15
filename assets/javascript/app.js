@@ -1,7 +1,7 @@
 //starting options for my movie giphy api
 var topics = ["Gone in 60 Seconds", "Rush Hour", "Scarface", "White Men Can't Jump", "Toy Story"]
 
-// movie buttons function
+// display movie buttons function
 function buttons() {
 
     //empty what in the buttons div
@@ -72,6 +72,9 @@ function dispayGifs() {
 
             // Creating an element to hold the gif
             var image = $("<img>").attr("src", gif);
+            $(image).attr("data-still", response.data[i].images.fixed_height_still.url); 
+            $(image).attr("data-animate", response.data[i].images.fixed_height.url);
+            $(image).attr("data-state", "animate");
 
             // Display in html 
             gifDetails.prepend(image);
@@ -81,6 +84,22 @@ function dispayGifs() {
         }
     });
 }
+
+//pause gifs function
+$(document).on("click", "img", function(){
+
+    var state = $(this).attr("data-state");
+
+    if (state === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state", "animate");
+      } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+        console.log($(this).attr("data-still"));
+      }
+
+});
 //click event for the buttons
 $(document).on("click", ".movie-btn", dispayGifs);
 
